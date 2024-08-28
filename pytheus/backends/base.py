@@ -2,7 +2,7 @@ import importlib
 import json
 import os
 from threading import Lock
-from typing import TYPE_CHECKING, Any, Dict, Optional, Protocol, Type, runtime_checkable
+from typing import TYPE_CHECKING, Any, Dict, Optional, Type
 
 from pytheus.exceptions import InvalidBackendClassException, InvalidBackendConfigException
 
@@ -13,8 +13,7 @@ if TYPE_CHECKING:
 BackendConfig = Dict[str, Any]
 
 
-@runtime_checkable
-class Backend(Protocol):
+class Backend:
     """
     Describes how to implement a Backend that can be used as a metric value backend.
     It must take the values indicated in the `__init__` method.
@@ -107,15 +106,11 @@ def get_backend_class() -> Type[Backend]:
     return BACKEND_CLASS
 
 
-class SingleProcessBackend:
+class SingleProcessBackend(Backend):
     """Provides a single-process backend that uses a thread-safe, in-memory approach."""
 
-    def __init__(
-        self,
-        config: BackendConfig,
-        metric: "_Metric",
-        histogram_bucket: Optional[str] = None,
-    ) -> None:
+    def __init__(self, config: BackendConfig, metric: "_Metric", histogram_bucket: Optional[str] = None) -> None:
+        super().__init__(config, metric, histogram_bucket)
         self._value = 0.0
         self._lock = Lock()
 
@@ -136,5 +131,5 @@ class SingleProcessBackend:
             return self._value
 
 
-BACKEND_CLASS: Type[Backend]
-BACKEND_CONFIG: BackendConfig
+BACKEND_CLASS = None
+BACKEND_CONFIG = None

@@ -1,13 +1,13 @@
 from logging import getLogger
 from threading import Lock
-from typing import Dict, Iterable, Optional, Protocol
+from typing import Dict, Iterable, Optional
 
 from pytheus.utils import MetricType
 
 logger = getLogger(__name__)
 
 
-class Collector(Protocol):
+class Collector:
     name: str
     description: str
     type_: MetricType
@@ -16,7 +16,7 @@ class Collector(Protocol):
         ...
 
 
-class Registry(Protocol):
+class Registry:
     prefix: Optional[str]
 
     def register(self, collector: Collector) -> None:

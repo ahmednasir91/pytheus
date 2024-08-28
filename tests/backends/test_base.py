@@ -10,14 +10,14 @@ from pytheus.backends.base import (
     _import_backend_class,
     get_backend,
     get_backend_class,
-    load_backend,
+    load_backend, Backend,
 )
 from pytheus.metrics import _Metric
 
 
-class DummyProcessBackend:
+class DummyProcessBackend(Backend):
     def __init__(self, config, metric, histogram_bucket=None):
-        pass
+        super().__init__(config, metric, histogram_bucket)
 
     @classmethod
     def _initialize(cls, config):
